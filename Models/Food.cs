@@ -10,8 +10,12 @@ namespace MamaFood.Models
     public class Food
     {
         public int ID { get; set; }
+        
+        [Required]
+        [Display(Name = "Food Image")]
+        public string FoodImage { get; set; }
 
-        [StringLength(60, ErrorMessage = "The food name should be between 3 to 60 characters!" ,MinimumLength = 3)]
+        [StringLength(60, ErrorMessage = "The food name should be between 3 to 60 characters!", MinimumLength = 3)]
         [Required]
         [Display(Name = "Food Name")]
         public string FoodName { get; set; }

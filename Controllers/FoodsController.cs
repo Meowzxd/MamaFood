@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MamaFood.Data;
 using MamaFood.Models;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace MamaFood.Views.Foods
 {
@@ -49,18 +53,41 @@ namespace MamaFood.Views.Foods
             return View();
         }
 
-        // POST: Foods/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        private CloudBlobContainer getBlobStorageInformation()
+        {
+            //step 1: read json
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json");
+            IConfigurationRoot configure = builder.Build();
+
+            //to get key access
+            //once link, time to read the content to get the connectionstring
+            CloudStorageAccount objectaccount = CloudStorageAccount.Parse(configure["ConnectionStrings:StorageConnection"]);
+            CloudBlobClient blobclient = objectaccount.CreateCloudBlobClient();
+
+            //step 2: how to create a new container in the blob storage account.
+            CloudBlobContainer container = blobclient.GetContainerReference("mamafood-blobcontainer");
+            return container;
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FoodName,FoodType,Price")] Food food)
+        public async Task<IActionResult> Create([Bind("ID,FoodImage,FoodName,FoodType,Price")] Food food)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(food);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+
+                CloudBlobContainer container = getBlobStorageInformation();
+                CloudBlockBlob blob = container.GetBlockBlobReference(food.FoodName);
+                using (var fileStream = System.IO.File.OpenRead(@"D:\\DDAC\\Assignment\\Image1.jpg"))
+                //using (var fileStream = System.IO.File.OpenRead(Path.GetFullPath()))
+                {
+                    blob.UploadFromStreamAsync(fileStream).Wait();
+                }
             }
             return View(food);
         }
@@ -86,7 +113,7 @@ namespace MamaFood.Views.Foods
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FoodName,FoodType,Price")] Food food)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,FoodImage,FoodName,FoodType,Price")] Food food)
         {
             if (id != food.ID)
             {

@@ -14,6 +14,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.FoodImage)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FoodName)
             </th>
             <th>
@@ -26,8 +29,11 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FoodImage)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FoodName)
             </td>
@@ -43,6 +49,6 @@
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

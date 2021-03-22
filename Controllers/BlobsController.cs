@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -37,7 +38,7 @@ namespace BlobStorage.Controllers
 
 
         //Upload single file
-        public string UploadBlob()
+        /*public string UploadBlob()
         {
             CloudBlobContainer container = getBlobStorageInformation();
             CloudBlockBlob blob = container.GetBlockBlobReference("myBlob");
@@ -46,6 +47,24 @@ namespace BlobStorage.Controllers
                 blob.UploadFromStreamAsync(fileStream).Wait();
             }
             return "success!";
+        }*/
+
+        public void UploadBlob(string targetfolder, string fileName, FileStream fileStream)
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(fileName) && fileStream != null)
+                {
+                    CloudBlobContainer container = getBlobStorageInformation();
+                    CloudBlockBlob blockBlob = container.GetBlockBlobReference(targetfolder + fileName);
+
+                    blockBlob.UploadFromStreamAsync(fileStream);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("File Upload Failed");
+            }
         }
 
         //Upload multiple images
