@@ -27,7 +27,7 @@ namespace BlobStorage.Controllers
 
             //to get key access
             //once link, time to read the content to get the connectionstring
-            CloudStorageAccount objectaccount = CloudStorageAccount.Parse(configure["ConnectionString:StorageConnection"]);
+            CloudStorageAccount objectaccount = CloudStorageAccount.Parse(configure["ConnectionStrings:StorageConnection"]);
             CloudBlobClient blobclient = objectaccount.CreateCloudBlobClient();
 
             //step 2: how to create a new container in the blob storage account.
