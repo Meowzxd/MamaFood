@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "storage1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/ddacmamafood",
+      "type": "storage.azure",
+      "connectionId": "StorageConnection",
+      "secretStore": "AzureAppSettings"
+    },
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/mamafooddbserver/databases/MamaFood_db",
+      "type": "mssql.azure",
+      "connectionId": "MamaFoodContextConnection",
+      "secretStore": "AzureAppSettings"
+    },
+    "mssql2": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/mamafooddbserver/databases/MamaFood_db",
+      "type": "mssql.azure",
+      "connectionId": "FoodContext",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}
