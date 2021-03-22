@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "Menu | MamaFood";
+}
+
+<h1>Menu</h1>
+
+<ul>
+    @foreach (var item in Model)
+    {
+        string[] link = item.Split("#");
+        <li>
+            <img src="@link[1]" width="300px" height="200px" />
+            <span style="color:red">@link[0]</span>
+            <a asp-area="@link[0]" asp-action="DeleteBlob">Delete</a>
+            <br /><br /><br />
+        </li>
+    }
+</ul>
