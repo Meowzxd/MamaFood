@@ -8,7 +8,12 @@ namespace MamaFood.Models
 {
     public class Order: TableEntity
     {
-        public List<OrderItem> Items { get; set; }
-        public DateTime OrderDate { get; set; }
+        public Order() { }
+        public Order(string custName)
+        {
+            this.PartitionKey = Guid.NewGuid().ToString();
+            this.RowKey = custName;
+        }
+        public string OrderStatus { get; set; }
     }
 }

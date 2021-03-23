@@ -1,0 +1,36 @@
+﻿@model List<Order>
+@{
+    ViewData["Title"] = "My Cart";
+}
+<h1>Cart</h1>
+@if (ViewBag.msg != null)
+{
+    <h2>@ViewBag.msg</h2>
+}
+else
+{
+    <table border="1">
+        <tr>
+            <th>Order Number</th>
+            <th>Customer Name</th>
+            <th>Order Status</th>
+            <th>Order Date</th>
+        </tr>
+        
+        @foreach (var displayresult in Model)
+        {
+        <tr>
+            <td>@displayresult.PartitionKey</td>
+            <td>@displayresult.RowKey</td>
+            <td>@displayresult.OrderStatus</td>
+            <td>@displayresult.Timestamp</td>
+            <td>
+                Nah
+                @*<a asp-route-PartitionKey="@displayresult.PartitionKey" asproute-RowKey="@displayresult.RowKey" asp-controller="Tables" aspaction="DeleteEntity">
+                    <button>Delete</button>
+                </a>*@
+            </td>
+        </tr>
+        }
+    </table>
+} 
