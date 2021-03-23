@@ -77,15 +77,6 @@ namespace MamaFood.Views.Foods
         {
             if (ModelState.IsValid)
             {
-                //Food food = new Food
-                //{
-                //    ID = item.ID,
-                //    FoodImage = item.FoodImage.FileName,
-                //    FoodName = item.FoodName,
-                //    FoodType = item.FoodType,
-                //    Price = item.Price
-                //};
-
                 _context.Add(food);
                 await _context.SaveChangesAsync();
 
@@ -96,8 +87,9 @@ namespace MamaFood.Views.Foods
                 //{
                 //    blob.UploadFromStreamAsync(fileStream).Wait();
                 //}
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index", "Foods");
+            return View(food);
         }
 
         // GET: Foods/Edit/5
