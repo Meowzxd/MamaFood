@@ -77,19 +77,27 @@ namespace MamaFood.Views.Foods
         {
             if (ModelState.IsValid)
             {
+                //Food food = new Food
+                //{
+                //    ID = item.ID,
+                //    FoodImage = item.FoodImage.FileName,
+                //    FoodName = item.FoodName,
+                //    FoodType = item.FoodType,
+                //    Price = item.Price
+                //};
+
                 _context.Add(food);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
 
-                CloudBlobContainer container = getBlobStorageInformation();
-                CloudBlockBlob blob = container.GetBlockBlobReference(food.FoodName);
-                using (var fileStream = System.IO.File.OpenRead(@"D:\\DDAC\\Assignment\\Image1.jpg"))
+                //CloudBlobContainer container = getBlobStorageInformation();
+                //CloudBlockBlob blob = container.GetBlockBlobReference(item.FoodImage.FileName);
+                //using (var fileStream = item.FoodImage.OpenReadStream())
                 //using (var fileStream = System.IO.File.OpenRead(Path.GetFullPath()))
-                {
-                    blob.UploadFromStreamAsync(fileStream).Wait();
-                }
+                //{
+                //    blob.UploadFromStreamAsync(fileStream).Wait();
+                //}
             }
-            return View(food);
+            return RedirectToAction("Index", "Foods");
         }
 
         // GET: Foods/Edit/5
