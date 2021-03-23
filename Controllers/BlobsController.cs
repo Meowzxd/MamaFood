@@ -36,20 +36,34 @@ namespace BlobStorage.Controllers
             return container;
         }
 
-
-        //Upload single file
-        /*public string UploadBlob()
+        public ActionResult UploadBlob()
         {
             CloudBlobContainer container = getBlobStorageInformation();
-            CloudBlockBlob blob = container.GetBlockBlobReference("myBlob");
-            using (var fileStream = System.IO.File.OpenRead(@"D:\\DDAC\\Assignment\\Image1.jpg"))
-            {
-                blob.UploadFromStreamAsync(fileStream).Wait();
-            }
-            return "success!";
-        }*/
+            //Step 2: create the empty list to store for the blobs list information 
+            List<string> blobs = new List<string>();
 
-        public void UploadBlob(string targetfolder, string fileName, FileStream fileStream)
+            //step 3: get the listing record from the blob storage
+            BlobResultSegment result = container.ListBlobsSegmentedAsync(null).Result;
+
+            //step 4: to read blob listing from the storage
+            foreach (IListBlobItem item in result.Results)
+            {
+                //step 4.1. check the type of the blob : block blob or directory or page block
+                if (item.GetType() == typeof(CloudBlockBlob))
+                {
+                    CloudBlockBlob blob = (CloudBlockBlob)item;
+                    blobs.Add(blob.Name + "#" + blob.Uri.ToString());
+                }
+                else if (item.GetType() == typeof(CloudBlobDirectory))
+                {
+                    CloudBlobDirectory blob = (CloudBlobDirectory)item;
+                    blobs.Add(blob.Uri.ToString());
+                }
+            }
+            return View(blobs);
+        }
+
+        /*public void UploadBlob(string targetfolder, string fileName, FileStream fileStream)
         {
             try
             {
@@ -65,24 +79,51 @@ namespace BlobStorage.Controllers
             {
                 throw new Exception("File Upload Failed");
             }
+        }*/
+
+        /*public string UploadBlob(string strFileName, byte[] fileData)
+        {
+            try
+            {
+                var _task = Task.Run(() => this.UploadBlobAsync(strFileName, fileData));
+                _task.Wait();
+                string fileUrl = _task.Result;
+                return fileUrl;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
         }
 
-        //Upload multiple images
-        //public string UploadBlob()
-        //{
-        //    CloudBlobContainer container = getBlobStorageInformation();
+        private string GenerateFileName(string fileName)
+        {
+            string strFileName = string.Empty;
+            string[] strName = fileName.Split('.');
+            strFileName = DateTime.Now.ToUniversalTime().ToString("yyyy/MM/dd") + "/" + DateTime.Now.ToUniversalTime().ToString("yyyyMMdd\\THHmmssfff") + "." + strName[strName.Length - 1];
+            return strFileName;
+        }
 
-        //    for (int i = 1; i <= 3; i++)
-        //    {
-        //        CloudBlockBlob blob = container.GetBlockBlobReference("myBlob" + i);
-        //        using (var fileStream = System.IO.File.OpenRead(@"D:\\DDAC\\Assignment\\Image" + i + ".jpg"))
-        //        {
-        //            blob.UploadFromStreamAsync(fileStream).Wait();
-        //        }
-        //    }
+        private async Task<string> UploadBlobAsync(string strFileName, byte[] fileData)
+        {
+            try
+            {
+                CloudBlobContainer container = getBlobStorageInformation();
+                string fileName = this.GenerateFileName(strFileName);
 
-        //    return "success!";
-        //}
+                if (fileName != null && fileData != null)
+                {
+                    CloudBlockBlob cloudBlockBlob = container.GetBlockBlobReference(fileName);
+                    await cloudBlockBlob.UploadFromByteArrayAsync(fileData, 0, fileData.Length);
+                    return cloudBlockBlob.Uri.AbsoluteUri;
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }*/
 
         public ActionResult Menu()
         {

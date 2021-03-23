@@ -18,3 +18,15 @@
         <br /><br /><br />
     </div>
 }
+
+@*@model Food
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div>
+        @Html.LabelFor(x => x.FoodImage)
+        @Html.TextBoxFor(x => x.FoodImage, new { type = "file" })
+        @Html.ValidationMessageFor(x => x.FoodImage)
+    </div>
+
+    <button type="submit">Upload</button>
+}*@

@@ -29,6 +29,26 @@ namespace MamaFood.Views.Foods
             return View(await _context.Food.ToListAsync());
         }
 
+        /*public ActionResult Index()
+        {
+            var food = new Food();
+            return View(food);
+        }
+
+        [HttpPost]
+        public ActionResult Index(Food food)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(food);
+            }
+
+            *//*byte[] uploadedFile = new byte[food.FoodImage.InputStream.Length];
+            food.FoodImage.InputStream.Read(uploadedFile, 0, uploadedFile.Length);*//*
+
+            return Content("Thanks for uploading the file");
+        }*/
+
         // GET: Foods/Details/5
         public async Task<IActionResult> Details(int? id)
         {
