@@ -1,18 +1,23 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage.Table;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MamaFood.Models
 {
-    public class OrderItem
+    public class OrderItem : TableEntity
     {
-        public OrderItem(string id, int qty = 1)
+        public OrderItem() { }
+        public OrderItem(string foodId, string orderId, double price, int qty = 1)
         {
-            this.FoodID = id;
+            this.PartitionKey = foodId;
+            this.RowKey = orderId;
+            this.UnitPrice = price;
             this.Quantity = qty;
         }
-        public string FoodID { get; set; }
+        public double UnitPrice { get; set; }
         public int Quantity { get; set; }
+
     }
 }

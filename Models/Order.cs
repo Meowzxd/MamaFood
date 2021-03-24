@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace MamaFood.Models
 {
-    public class Order: TableEntity
+    public class Order : TableEntity
     {
         public Order() { }
         public Order(string custName)
         {
             this.PartitionKey = Guid.NewGuid().ToString();
             this.RowKey = custName;
+            this.OrderStatus = "Pending";
         }
         public string OrderStatus { get; set; }
     }

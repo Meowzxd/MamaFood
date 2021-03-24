@@ -1,0 +1,24 @@
+﻿@model List<OrderItem>
+@{
+    ViewData["Title"] = "My Cart";
+}
+<h1>Cart [@Model.Count]</h1>
+
+<table class="table">
+    <tr>
+        <th>Food Image</th>
+        <th>Food Name</th>
+        <th>Unit Price</th>
+        <th>Quantity</th>
+    </tr>
+
+@foreach (var food in Model)
+{
+    <tr>
+        <td>@food.PartitionKey</td>
+        <td>@food.RowKey</td>
+        <td>@food.UnitPrice</td>
+        <td>@food.Quantity</td>
+    </tr>
+}
+</table>
