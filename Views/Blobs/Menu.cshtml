@@ -10,21 +10,10 @@
     string[] link = item.Split("#");
 
     <div class="col-md-6 col-lg-3 ftco-animate">
-        <a asp-area="@link[0]" asp-action="DeleteBlob"><img src="@link[1]" width="300px" height="200px" /></a>
+        <a asp-area="@link[0]" asp-action="DeleteBlob"><img src="@link[1]" width="180px" height="150px" /></a>
         <span style="color:red">@link[0]</span>
         <a asp-area="@link[0]" asp-action="DeleteBlob">Delete</a>
         <br /><br /><br />
     </div>
 }
 
-@*@model Food
-@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    <div>
-        @Html.LabelFor(x => x.FoodImage)
-        @Html.TextBoxFor(x => x.FoodImage, new { type = "file" })
-        @Html.ValidationMessageFor(x => x.FoodImage)
-    </div>
-
-    <button type="submit">Upload</button>
-}*@

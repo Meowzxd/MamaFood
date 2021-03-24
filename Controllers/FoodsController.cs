@@ -30,26 +30,6 @@ namespace MamaFood.Views.Foods
             return View(await _context.Food.ToListAsync());
         }
 
-        /*public ActionResult Index()
-        {
-            var food = new Food();
-            return View(food);
-        }
-
-        [HttpPost]
-        public ActionResult Index(Food food)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(food);
-            }
-
-            *//*byte[] uploadedFile = new byte[food.FoodImage.InputStream.Length];
-            food.FoodImage.InputStream.Read(uploadedFile, 0, uploadedFile.Length);*//*
-
-            return Content("Thanks for uploading the file");
-        }*/
-
         // GET: Foods/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -76,18 +56,14 @@ namespace MamaFood.Views.Foods
 
         private CloudBlobContainer getBlobStorageInformation()
         {
-            //step 1: read json
             var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json");
             IConfigurationRoot configure = builder.Build();
 
-            //to get key access
-            //once link, time to read the content to get the connectionstring
             CloudStorageAccount objectaccount = CloudStorageAccount.Parse(configure["ConnectionStrings:StorageConnection"]);
             CloudBlobClient blobclient = objectaccount.CreateCloudBlobClient();
 
-            //step 2: how to create a new container in the blob storage account.
             CloudBlobContainer container = blobclient.GetContainerReference("mamafood-blobcontainer");
             return container;
         }
@@ -131,12 +107,9 @@ namespace MamaFood.Views.Foods
             return View(food);
         }
 
-        // POST: Foods/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FoodImage,FoodName,FoodType,Price")] Food food)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,ImageFile,FoodImage,FoodName,FoodType,Price")] Food food)
         {
             if (id != food.ID)
             {
@@ -147,6 +120,15 @@ namespace MamaFood.Views.Foods
             {
                 try
                 {
+                    CloudBlobContainer container = getBlobStorageInformation();
+                    CloudBlockBlob blob = container.GetBlockBlobReference(food.ImageFile.FileName);
+                    using (var fileStream = food.ImageFile.OpenReadStream())
+                    {
+                        blob.UploadFromStreamAsync(fileStream).Wait();
+                    }
+
+                    food.FoodImage = blob.Uri.ToString();
+
                     _context.Update(food);
                     await _context.SaveChangesAsync();
                 }
@@ -190,9 +172,35 @@ namespace MamaFood.Views.Foods
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var food = await _context.Food.FindAsync(id);
+
+            //CloudBlobContainer container = getBlobStorageInformation();
+            //CloudBlockBlob deletedblob = container.GetBlockBlobReference(food.ImageFile.FileName);
+            ////CloudBlockBlob deletedblob = new CloudBlockBlob(new Uri(food.FoodImage));
+
+            //string name = deletedblob.Name;
+            //var result = deletedblob.DeleteIfExistsAsync().Result;
+
             _context.Food.Remove(food);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public string DeleteBlob(string area)
+        {
+            CloudBlobContainer container = getBlobStorageInformation();
+
+            //step 2: give a name for the desired blob (new blob name)
+            CloudBlockBlob deletedblob = container.GetBlockBlobReference(area);
+
+            //step 3: delete the item
+            string name = deletedblob.Name;
+            var result = deletedblob.DeleteIfExistsAsync().Result;
+
+            //step 4: output message
+            if (result == true)
+                return "Item " + name + " is successfully deleted";
+            else
+                return "Item " + name + " is not able to delete";
         }
 
         private bool FoodExists(int id)
