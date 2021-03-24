@@ -24,7 +24,6 @@ namespace MamaFood.Views.Foods
             _context = context;
         }
 
-        // GET: Foods
         public async Task<IActionResult> Index()
         {
             return View(await _context.Food.ToListAsync());
@@ -35,7 +34,6 @@ namespace MamaFood.Views.Foods
             return View(await _context.Food.ToListAsync());
         }
 
-        // GET: Foods/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -53,7 +51,6 @@ namespace MamaFood.Views.Foods
             return View(food);
         }
 
-        // GET: Foods/Create
         public IActionResult Create()
         {
             return View();
@@ -96,7 +93,6 @@ namespace MamaFood.Views.Foods
             return View(food);
         }
 
-        // GET: Foods/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -153,7 +149,6 @@ namespace MamaFood.Views.Foods
             return View(food);
         }
 
-        // GET: Foods/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -171,7 +166,6 @@ namespace MamaFood.Views.Foods
             return View(food);
         }
 
-        // POST: Foods/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
