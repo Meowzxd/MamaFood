@@ -173,34 +173,14 @@ namespace MamaFood.Views.Foods
         {
             var food = await _context.Food.FindAsync(id);
 
-            //CloudBlobContainer container = getBlobStorageInformation();
-            //CloudBlockBlob deletedblob = container.GetBlockBlobReference(food.ImageFile.FileName);
-            ////CloudBlockBlob deletedblob = new CloudBlockBlob(new Uri(food.FoodImage));
+            CloudBlobContainer container = getBlobStorageInformation();
+            CloudBlockBlob deletedblob = container.GetBlockBlobReference(food.FoodImage.Substring(food.FoodImage.LastIndexOf("/") + 1));
 
-            //string name = deletedblob.Name;
-            //var result = deletedblob.DeleteIfExistsAsync().Result;
+            deletedblob.DeleteIfExistsAsync().Wait();
 
             _context.Food.Remove(food);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        public string DeleteBlob(string area)
-        {
-            CloudBlobContainer container = getBlobStorageInformation();
-
-            //step 2: give a name for the desired blob (new blob name)
-            CloudBlockBlob deletedblob = container.GetBlockBlobReference(area);
-
-            //step 3: delete the item
-            string name = deletedblob.Name;
-            var result = deletedblob.DeleteIfExistsAsync().Result;
-
-            //step 4: output message
-            if (result == true)
-                return "Item " + name + " is successfully deleted";
-            else
-                return "Item " + name + " is not able to delete";
         }
 
         private bool FoodExists(int id)
