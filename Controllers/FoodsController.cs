@@ -98,17 +98,18 @@ namespace MamaFood.Views.Foods
         {
             if (ModelState.IsValid)
             {
-                food.FoodImage = food.ImageFile.FileName;
-
-                _context.Add(food);
-                await _context.SaveChangesAsync();
-
                 CloudBlobContainer container = getBlobStorageInformation();
                 CloudBlockBlob blob = container.GetBlockBlobReference(food.ImageFile.FileName);
                 using (var fileStream = food.ImageFile.OpenReadStream())
                 {
                     blob.UploadFromStreamAsync(fileStream).Wait();
                 }
+
+                food.FoodImage = blob.Uri.ToString();
+
+                _context.Add(food);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction("Menu", "Blobs");
             }
             return View(food);
