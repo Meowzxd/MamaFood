@@ -30,6 +30,11 @@ namespace MamaFood.Views.Foods
             return View(await _context.Food.ToListAsync());
         }
 
+        public async Task<IActionResult> Menu()
+        {
+            return View(await _context.Food.ToListAsync());
+        }
+
         // GET: Foods/Details/5
         public async Task<IActionResult> Details(int? id)
         {

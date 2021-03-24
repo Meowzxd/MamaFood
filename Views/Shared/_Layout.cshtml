@@ -6,12 +6,35 @@
     <title>@ViewData["Title"] | MamaFood</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+
+    <!-- MamaFood -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/style/css/open-iconic-bootstrap.min.css" />
+    <link rel="stylesheet" href="~/style/css/animate.css" />
+
+    <link rel="stylesheet" href="~/style/css/owl.carousel.min.css" />
+    <link rel="stylesheet" href="~/style/css/owl.theme.default.min.css" />
+    <link rel="stylesheet" href="~/style/css/magnific-popup.css" />
+
+    <link rel="stylesheet" href="~/style/css/aos.css" />
+
+    <link rel="stylesheet" href="~/style/css/ionicons.min.css" />
+
+    <link rel="stylesheet" href="~/style/css/bootstrap-datepicker.css" />
+    <link rel="stylesheet" href="~/style/css/jquery.timepicker.css" />
+
+    <link rel="stylesheet" href="~/style/css/flaticon.css" />
+    <link rel="stylesheet" href="~/style/css/icomoon.css" />
+    <link rel="stylesheet" href="~/style/css/style.css" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/Images/MamaFood-fulllogo.png" width="150" height="75"/></a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/MamaFood-fulllogo.png" width="150" height="75" /></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -20,7 +43,7 @@
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Blobs" asp-action="Menu">Menu</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Foods" asp-action="Menu">Menu</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Foods" asp-action="Index">Foods</a>
@@ -47,6 +70,22 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/style/js/jquery.min.js"></script>
+    <script src="~/style/js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="~/style/js/popper.min.js"></script>
+    <script src="~/style/js/bootstrap.min.js"></script>
+    <script src="~/style/js/jquery.easing.1.3.js"></script>
+    <script src="~/style/js/jquery.waypoints.min.js"></script>
+    <script src="~/style/js/jquery.stellar.min.js"></script>
+    <script src="~/style/js/owl.carousel.min.js"></script>
+    <script src="~/style/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/style/js/aos.js"></script>
+    <script src="~/style/js/jquery.animateNumber.min.js"></script>
+    <script src="~/style/js/bootstrap-datepicker.js"></script>
+    <script src="~/style/js/scrollax.min.js"></script>
+    <script src="~/style/js/main.js"></script>
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>
