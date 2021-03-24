@@ -8,7 +8,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        <a id="cart" class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index" asp-route-partitionName="ec37c1bc-d2b9-4f95-a07d-6c615e5d6d42" asp-route-rowName="meow@example.com">My Cart</a>
+        <a id="order" class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">Order</a>
     </li>
     <li class="nav-item">
         <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@UserManager.GetUserName(User)</a>
