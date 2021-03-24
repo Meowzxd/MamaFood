@@ -10,8 +10,6 @@
     string[] link = item.Split("#");
 
     <div class="col-md-6 col-lg-3 ftco-animate">
-
-
         <a asp-area="@link[0]" asp-action="DeleteBlob"><img src="@link[1]" width="300px" height="200px" /></a>
         <span style="color:red">@link[0]</span>
         <a asp-area="@link[0]" asp-action="DeleteBlob">Delete</a>

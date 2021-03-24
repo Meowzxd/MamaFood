@@ -11,6 +11,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage;
 using System.IO;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace MamaFood.Views.Foods
 {
@@ -100,14 +101,13 @@ namespace MamaFood.Views.Foods
                 _context.Add(food);
                 await _context.SaveChangesAsync();
 
-                //CloudBlobContainer container = getBlobStorageInformation();
-                //CloudBlockBlob blob = container.GetBlockBlobReference(item.FoodImage.FileName);
-                //using (var fileStream = item.FoodImage.OpenReadStream())
-                //using (var fileStream = System.IO.File.OpenRead(Path.GetFullPath()))
-                //{
-                //    blob.UploadFromStreamAsync(fileStream).Wait();
-                //}
-                return RedirectToAction("Index");
+                CloudBlobContainer container = getBlobStorageInformation();
+                CloudBlockBlob blob = container.GetBlockBlobReference(food.FoodImage.FileName);
+                using (var fileStream = food.FoodImage.OpenReadStream())
+                {
+                    blob.UploadFromStreamAsync(fileStream).Wait();
+                }
+                return RedirectToAction("Menu", "Blobs");
             }
             return View(food);
         }
