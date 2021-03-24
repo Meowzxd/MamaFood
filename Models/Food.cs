@@ -14,7 +14,7 @@ namespace MamaFood.Models
         
         [Required]
         [Display(Name = "Food Image")]
-        public string FoodImage { get; set; }
+        public IFormFile FoodImage { get; set; }
 
         [StringLength(60, ErrorMessage = "The food name should be between 3 to 60 characters!", MinimumLength = 3)]
         [Required]

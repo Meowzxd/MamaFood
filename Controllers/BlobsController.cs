@@ -39,28 +39,13 @@ namespace BlobStorage.Controllers
         public ActionResult UploadBlob()
         {
             CloudBlobContainer container = getBlobStorageInformation();
-            //Step 2: create the empty list to store for the blobs list information 
-            List<string> blobs = new List<string>();
-
-            //step 3: get the listing record from the blob storage
-            BlobResultSegment result = container.ListBlobsSegmentedAsync(null).Result;
-
-            //step 4: to read blob listing from the storage
-            foreach (IListBlobItem item in result.Results)
+            CloudBlockBlob blob = container.GetBlockBlobReference("mamafood-blobcontainer");
+            
+            using (var fileStream = System.IO.File.OpenRead(@"D:\\DDAC\\Assignment\\Image1.jpg"))
             {
-                //step 4.1. check the type of the blob : block blob or directory or page block
-                if (item.GetType() == typeof(CloudBlockBlob))
-                {
-                    CloudBlockBlob blob = (CloudBlockBlob)item;
-                    blobs.Add(blob.Name + "#" + blob.Uri.ToString());
-                }
-                else if (item.GetType() == typeof(CloudBlobDirectory))
-                {
-                    CloudBlobDirectory blob = (CloudBlobDirectory)item;
-                    blobs.Add(blob.Uri.ToString());
-                }
+                blob.UploadFromStreamAsync(fileStream).Wait();
             }
-            return View(blobs);
+            return RedirectToAction("Menu");
         }
 
         /*public void UploadBlob(string targetfolder, string fileName, FileStream fileStream)
