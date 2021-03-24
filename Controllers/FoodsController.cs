@@ -94,16 +94,18 @@ namespace MamaFood.Views.Foods
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FoodImage,FoodName,FoodType,Price")] Food food)
+        public async Task<IActionResult> Create([Bind("ID,ImageFile,FoodName,FoodType,Price")] Food food)
         {
             if (ModelState.IsValid)
             {
+                food.FoodImage = food.ImageFile.FileName;
+
                 _context.Add(food);
                 await _context.SaveChangesAsync();
 
                 CloudBlobContainer container = getBlobStorageInformation();
-                CloudBlockBlob blob = container.GetBlockBlobReference(food.FoodImage.FileName);
-                using (var fileStream = food.FoodImage.OpenReadStream())
+                CloudBlockBlob blob = container.GetBlockBlobReference(food.ImageFile.FileName);
+                using (var fileStream = food.ImageFile.OpenReadStream())
                 {
                     blob.UploadFromStreamAsync(fileStream).Wait();
                 }
