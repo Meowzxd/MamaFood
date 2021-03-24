@@ -32,7 +32,7 @@
     @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FoodImage)
+                @Html.DisplayFor(modelItem => item.FoodImage.FileName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FoodName)

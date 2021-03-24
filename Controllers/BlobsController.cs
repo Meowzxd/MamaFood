@@ -39,7 +39,7 @@ namespace BlobStorage.Controllers
         public ActionResult UploadBlob()
         {
             CloudBlobContainer container = getBlobStorageInformation();
-            CloudBlockBlob blob = container.GetBlockBlobReference("mamafood-blobcontainer");
+            CloudBlockBlob blob = container.GetBlockBlobReference("Test");
             
             using (var fileStream = System.IO.File.OpenRead(@"D:\\DDAC\\Assignment\\Image1.jpg"))
             {
