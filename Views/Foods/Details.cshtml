@@ -5,42 +5,22 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@*<h1>Details</h1>
+<script>
+    const MinusQuantity = () => {
+        if (document.getElementById("quantity").value != 1)
+            document.getElementById("quantity").value = parseInt(document.getElementById("quantity").value) - 1;
+    }
 
-<div>
-    <h4>Food</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FoodImage)
-        </dt>
-        <dd class="col-sm-10">
-            <img src="@Html.DisplayFor(model => model.FoodImage)" alt="Image" width="180px" height="150px" />
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FoodName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FoodName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FoodType)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FoodType)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Menu">Back to Menu</a> |
-    <a asp-action="Menu">Add to Cart</a>
-</div>*@
+    const AddQuantity = () => {
+        if (document.getElementById("quantity").value != 100)
+            document.getElementById("quantity").value = parseInt(document.getElementById("quantity").value) + 1;
+    }
+
+    const AssignQuantity = () => {
+        let temp = document.getElementById("add-to-cart").getAttribute("href");
+        document.getElementById("add-to-cart").setAttribute("href", temp + "&qty=" + document.getElementById("quantity").value);
+    }
+</script>
 
 <div class="hero-wrap hero-bread" style="background-image: url('../../img/1.jpg');">
     <div class="container">
@@ -72,20 +52,20 @@
                     <div class="w-100"></div>
                     <div class="input-group col-md-6 d-flex mb-3">
                         <span class="input-group-btn mr-2">
-                            <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
+                            <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="" onclick="MinusQuantity()">
                                 <i class="ion-ios-remove"></i>
                             </button>
                         </span>
-                        <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
+                        <input readonly type="number" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
                         <span class="input-group-btn ml-2">
-                            <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
+                            <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="" onclick="AddQuantity()">
                                 <i class="ion-ios-add"></i>
                             </button>
                         </span>
                     </div>
                 </div>
                 <br />
-                <p><a href="#" class="btn btn-black py-3 px-5">Add to Cart</a></p>
+                <p><a id="add-to-cart" asp-controller="Order" asp-action="Cart" asp-route-foodId="@Model.ID" asp-route-price="@Model.Price" class="btn btn-black py-3 px-5" onclick="AssignQuantity()">Add to Cart</a></p>
             </div>
         </div>
     </div>

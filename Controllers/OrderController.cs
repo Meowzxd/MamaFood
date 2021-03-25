@@ -83,7 +83,7 @@ namespace MamaFood.Controllers
             //return View();
         }
 
-        public async Task<IActionResult> Cart(int? foodID, double price)
+        public async Task<IActionResult> Cart(int? foodID, double price, int? qty)
         {
             CloudTable orderTable = GetTableStorageInformation("Order");
             CloudTable detailTable = GetTableStorageInformation("OrderDetails");
@@ -120,11 +120,22 @@ namespace MamaFood.Controllers
                 order = results[0]; // Link to existing order
             }
 
-            if (foodID != null) // New food added
+            if (foodID != null && qty != null) // New food added
             {
                 try
                 {
-                    // Add food into OrderDetail Table
+                    // Add food into OrderDetail Table with quantity
+                    OrderItem item = new OrderItem(foodID.ToString(), order.PartitionKey, price, (int)qty);
+                    TableOperation insertFood = TableOperation.Insert(item);
+                    detailTable.ExecuteAsync(insertFood).Wait();
+                }
+                catch (Exception) { }
+            }
+            else if (foodID != null)
+            {
+                try
+                {
+                    // Add food into OrderDetail Table without quantity (default to 1)
                     OrderItem item = new OrderItem(foodID.ToString(), order.PartitionKey, price);
                     TableOperation insertFood = TableOperation.Insert(item);
                     detailTable.ExecuteAsync(insertFood).Wait();
