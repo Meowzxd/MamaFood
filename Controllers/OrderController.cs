@@ -171,5 +171,21 @@ namespace MamaFood.Controllers
 
             return View(foods);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string foodId, string orderId)
+        {
+            CloudTable detailTable = GetTableStorageInformation("OrderDetails");
+            TableOperation delete = TableOperation.Delete(
+                new OrderItem
+                {
+                    PartitionKey = foodId,
+                    RowKey = orderId,
+                    ETag = "*"
+                });
+            await detailTable.ExecuteAsync(delete);
+
+            return RedirectToAction("Cart");
+        }
     }
 }

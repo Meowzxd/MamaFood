@@ -2,6 +2,24 @@
 @{
     ViewData["Title"] = "My Cart";
 }
+
+<script>
+    const MinusQuantity = () => {
+        if (document.getElementById("quantity").value != 1)
+            document.getElementById("quantity").value = parseInt(document.getElementById("quantity").value) - 1;
+    }
+
+    const AddQuantity = () => {
+        if (document.getElementById("quantity").value != 100)
+            document.getElementById("quantity").value = parseInt(document.getElementById("quantity").value) + 1;
+    }
+
+    //const AssignQuantity = () => {
+    //    let temp = document.getElementById("add-to-cart").getAttribute("href");
+    //    document.getElementById("add-to-cart").setAttribute("href", temp + "&qty=" + document.getElementById("quantity").value);
+    //}
+</script>
+
 <h1>Cart [@Model.Count]</h1>
 
 <table class="table">
@@ -14,11 +32,28 @@
 
 @foreach (var displayItem in Model)
 {
-    <tr>
-        <td><img src=@displayItem.FoodModel.FoodImage alt=@displayItem.FoodModel.FoodName width="180px" height="150px" /></td>
-        <td>@displayItem.FoodModel.FoodName</td>
-        <td>RM @string.Format("{0:0.00}", displayItem.OrderItemModel.UnitPrice)</td>
-        <td>@displayItem.OrderItemModel.Quantity</td>
-    </tr>
+<tr>
+    <td><img src=@displayItem.FoodModel.FoodImage alt=@displayItem.FoodModel.FoodName width="180px" height="150px" /></td>
+    <td>@displayItem.FoodModel.FoodName</td>
+    <td>RM @string.Format("{0:0.00}", displayItem.OrderItemModel.UnitPrice)</td>
+    <td>
+        <span class="input-group-btn mr-2">
+            <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="" onclick="MinusQuantity()">
+                <i class="ion-ios-remove"></i>
+            </button>
+        </span>
+        @displayItem.OrderItemModel.Quantity
+        <span class="input-group-btn ml-2">
+            <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="" onclick="AddQuantity()">
+                <i class="ion-ios-add"></i>
+            </button>
+        </span>
+    </td>
+    <td>
+        <form asp-action="Delete" asp-route-foodId="@displayItem.OrderItemModel.PartitionKey" asp-route-orderId="@displayItem.OrderItemModel.RowKey">
+            <input type="submit" value="Remove" class="btn btn-danger" />
+        </form>
+    </td>
+</tr>
 }
 </table>
