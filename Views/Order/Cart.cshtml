@@ -5,13 +5,13 @@
 
 <script>
     const MinusQuantity = () => {
-        if (document.getElementById("quantity").value != 1)
-            document.getElementById("quantity").value = parseInt(document.getElementById("quantity").value) - 1;
+        if (document.getElementById("quantity").innerText != 1)
+            document.getElementById("quantity").innerText = parseInt(document.getElementById("quantity").innerText) - 1;
     }
 
     const AddQuantity = () => {
-        if (document.getElementById("quantity").value != 100)
-            document.getElementById("quantity").value = parseInt(document.getElementById("quantity").value) + 1;
+        if (document.getElementById("quantity").innerText != 100)
+            document.getElementById("quantity").innerText = parseInt(document.getElementById("quantity").innerText) + 1;
     }
 
     //const AssignQuantity = () => {
@@ -42,16 +42,18 @@
                 <i class="ion-ios-remove"></i>
             </button>
         </span>
-        @displayItem.OrderItemModel.Quantity
+        <div id="quantity" style="display: inline;">
+            @displayItem.OrderItemModel.Quantity
+        </div>
         <span class="input-group-btn ml-2">
             <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="" onclick="AddQuantity()">
                 <i class="ion-ios-add"></i>
             </button>
         </span>
     </td>
-    <td>
-        <form asp-action="Delete" asp-route-foodId="@displayItem.OrderItemModel.PartitionKey" asp-route-orderId="@displayItem.OrderItemModel.RowKey">
-            <input type="submit" value="Remove" class="btn btn-danger" />
+    <td class="product-remove">
+        <form id="deleteForm" asp-action="Delete" asp-route-foodId="@displayItem.OrderItemModel.PartitionKey" asp-route-orderId="@displayItem.OrderItemModel.RowKey">
+            <a onclick="document.getElementById('deleteForm').submit()"><span class="ion-ios-close"></span></a>
         </form>
     </td>
 </tr>
