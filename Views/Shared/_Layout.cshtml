@@ -62,11 +62,76 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    @*<footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2021 | <a asp-area="" asp-controller="Home" asp-action="About">MamaFood</a>
+            </div>
+        </footer>*@
+
+    <footer class="ftco-footer ftco-section">
         <div class="container">
-            &copy; 2021 | <a asp-area="" asp-controller="Home" asp-action="About">MamaFood</a>
+            <div class="row">
+                <div class="mouse">
+                    <a href="#" class="mouse-icon">
+                        <div class="mouse-wheel"><span class="ion-ios-arrow-up"></span></div>
+                    </a>
+                </div>
+            </div>
+            <div class="row mb-5">
+                <div class="col-md">
+                    <div class="ftco-footer-widget mb-4">
+                        <h2 class="ftco-heading-2">Mama Food</h2>
+                        <p>Good food within minutes</p>
+                        <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
+                            <li class="ftco-animate"><a href="https://twitter.com/arhlooooo"><span class="icon-twitter"></span></a></li>
+                            <li class="ftco-animate"><a href="https://www.facebook.com/arhlooooo"><span class="icon-facebook"></span></a></li>
+                            <li class="ftco-animate"><a href="https://www.instagram.com/mamafoooooood/"><span class="icon-instagram"></span></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="ftco-footer-widget mb-4 ml-md-5">
+                        <h2 class="ftco-heading-2">Menu</h2>
+                        <ul class="list-unstyled">
+                            <li><a asp-action="Index" asp-controller="Home" class="py-2 d-block">Home</a></li>
+                            <li><a asp-action="Menu" asp-controller="Foods" class="py-2 d-block">Menu</a></li>
+                            <li><a asp-action="About" asp-controller="Home" class="py-2 d-block">About</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="ftco-footer-widget mb-4">
+                        <h2 class="ftco-heading-2">Have a Questions?</h2>
+                        <div class="block-23 mb-3">
+                            <ul>
+                                <li><span class="icon icon-map-marker"></span><span class="text">Jalan Yaacob Latif, Cheras, 56000 Kuala Lumpur, Federal Territory of Kuala Lumpur</span></li>
+                                <li><a href="tel://077644998"><span class="icon icon-phone"></span><span class="text">+607 764 4998</span></a></li>
+                                <li><a href="mailto:mamafood1119@gmail.com"><span class="icon icon-envelope"></span><span class="text">mamafood1119@gmail.com</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p>
+                        Copyright &copy;
+                        <script>document.write(new Date().getFullYear());</script>
+                        All rights reserved | Mama Food <i class="icon-heart color-danger" aria-hidden="true"></i> by House Mama.
+                    </p>
+                </div>
+            </div>
         </div>
     </footer>
+
+    <!-- loader -->
+    <div id="ftco-loader" class="show fullscreen">
+        <svg class="circular" width="48px" height="48px">
+            <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
+            <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00" />
+        </svg>
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
