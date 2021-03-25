@@ -1,4 +1,5 @@
-﻿using MamaFood.Models;
+﻿using MamaFood.Data;
+using MamaFood.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
@@ -13,6 +14,13 @@ namespace MamaFood.Controllers
 {
     public class OrderController : Controller
     {
+        private readonly FoodContext _context;
+
+        public OrderController(FoodContext context)
+        {
+            _context = context;
+        }
+
         private CloudTable GetTableStorageInformation(string tableName)
         {
             //step 1: read json
@@ -139,7 +147,18 @@ namespace MamaFood.Controllers
 
             } while (continuationToken != null);
 
-            return View(orderDetails);
+            List<OrderFoodViewModel> foods = new List<OrderFoodViewModel>();
+            foreach (var d in orderDetails)
+            {
+                var f = _context.Food.Find(int.Parse(d.PartitionKey));
+                foods.Add(new OrderFoodViewModel
+                {
+                    FoodModel = f,
+                    OrderItemModel = d
+                });
+            }
+
+            return View(foods);
         }
     }
 }

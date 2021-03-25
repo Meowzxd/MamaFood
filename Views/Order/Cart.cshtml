@@ -1,4 +1,4 @@
-﻿@model List<OrderItem>
+﻿@model List<OrderFoodViewModel>
 @{
     ViewData["Title"] = "My Cart";
 }
@@ -12,13 +12,13 @@
         <th>Quantity</th>
     </tr>
 
-@foreach (var food in Model)
+@foreach (var displayItem in Model)
 {
     <tr>
-        <td>@food.PartitionKey</td>
-        <td>@food.RowKey</td>
-        <td>RM @string.Format("{0:0,0.00}", food.UnitPrice)</td>
-        <td>@food.Quantity</td>
+        <td><img src=@displayItem.FoodModel.FoodImage alt=@displayItem.FoodModel.FoodName width="180px" height="150px" /></td>
+        <td>@displayItem.FoodModel.FoodName</td>
+        <td>RM @string.Format("{0:0.00}", displayItem.OrderItemModel.UnitPrice)</td>
+        <td>@displayItem.OrderItemModel.Quantity</td>
     </tr>
 }
 </table>
