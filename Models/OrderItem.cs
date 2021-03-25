@@ -21,7 +21,7 @@ namespace MamaFood.Models
         }
 
         [Range(1, 100)]
-        [Column(TypeName = "decimal(18,3)")]
+        [DisplayFormat(DataFormatString = "{0:C0}")]
         [DataType(DataType.Currency)]
         public double UnitPrice { get; set; }
 

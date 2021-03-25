@@ -17,7 +17,7 @@
     <tr>
         <td>@food.PartitionKey</td>
         <td>@food.RowKey</td>
-        <td>@food.UnitPrice</td>
+        <td>RM @string.Format("{0:0,0.00}", food.UnitPrice)</td>
         <td>@food.Quantity</td>
     </tr>
 }
