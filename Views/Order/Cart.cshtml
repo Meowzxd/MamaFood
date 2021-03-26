@@ -4,23 +4,30 @@
 }
 
 <script>
-    const MinusQuantity = (id) => {
-        if (document.getElementById(id).innerText != 1)
-            document.getElementById(id).innerText = parseInt(document.getElementById(id).innerText) - 1;
+    const MinusQuantity = id => {
+        if (document.getElementById(id).value != 1)
+            document.getElementById(id).value = parseInt(document.getElementById(id).value) - 1;
     }
 
-    const AddQuantity = (id) => {
-        if (document.getElementById(id).innerText != 100)
-            document.getElementById(id).innerText = parseInt(document.getElementById(id).innerText) + 1;
+    const AddQuantity = id => {
+        if (document.getElementById(id).value != 100)
+            document.getElementById(id).value = parseInt(document.getElementById(id).value) + 1;
     }
 
-    //const AssignQuantity = () => {
-    //    let temp = document.getElementById("add-to-cart").getAttribute("href");
-    //    document.getElementById("add-to-cart").setAttribute("href", temp + "&qty=" + document.getElementById("quantity").value);
-    //}
+    const AssignQuantity = id => {
+        const editForm = document.getElementById('editForm-' + id);
+
+        // Attach payload to form
+        let temp = editForm.getAttribute("action");
+        editForm.setAttribute("action", temp + "&qty=" + document.getElementById(id).value);
+
+        editForm.submit()
+    }
 </script>
 
 <h1>Cart [@Model.Count]</h1>
+
+<a onclick="AssignQuantity()">Save My Choices</a>
 
 <table class="table" style="table-layout: fixed;">
     <tr>
@@ -38,24 +45,26 @@
     <td>@displayItem.FoodModel.FoodName</td>
     <td>RM @string.Format("{0:0.00}", displayItem.OrderItemModel.UnitPrice)</td>
     <td>
-        <span class="input-group-btn mr-2">
-            <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="" onclick="MinusQuantity(@displayItem.FoodModel.ID)">
-                <i class="ion-ios-remove"></i>
-            </button>
-        </span>
-        <div id="@displayItem.FoodModel.ID" style="display: inline;">
-            @displayItem.OrderItemModel.Quantity
-        </div>
-        <span class="input-group-btn ml-2">
-            <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="" onclick="AddQuantity(@displayItem.FoodModel.ID)">
-                <i class="ion-ios-add"></i>
-            </button>
-        </span>
+        <form id="editForm-@displayItem.FoodModel.ID" asp-action="Edit" asp-route-foodId="@displayItem.OrderItemModel.PartitionKey" asp-route-orderId="@displayItem.OrderItemModel.RowKey" asp-route-price="@displayItem.OrderItemModel.UnitPrice">
+            <span class="input-group-btn mr-2">
+                <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="" onclick="MinusQuantity(@displayItem.FoodModel.ID)">
+                    <i class="ion-ios-remove"></i>
+                </button>
+            </span>
+            <div style="display: inline;">
+                <input readonly id="@displayItem.FoodModel.ID" value="@displayItem.OrderItemModel.Quantity" style="width: 40px; text-align: center;" />
+            </div>
+            <span class="input-group-btn ml-2">
+                <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="" onclick="AddQuantity(@displayItem.FoodModel.ID)">
+                    <i class="ion-ios-add"></i>
+                </button>
+            </span>
+        </form>
     </td>
     <td class="product-remove">
-        <form id="deleteForm" asp-action="Delete" asp-route-foodId="@displayItem.OrderItemModel.PartitionKey" asp-route-orderId="@displayItem.OrderItemModel.RowKey">
-            <a onclick="document.getElementById('deleteForm').submit()"><span class="ion-ios-close"></span></a>
-        </form>
+        <form id="deleteForm-@displayItem.FoodModel.ID" asp-action="Delete" asp-route-foodId="@displayItem.OrderItemModel.PartitionKey" asp-route-orderId="@displayItem.OrderItemModel.RowKey"></form>
+            <a onclick="AssignQuantity(@displayItem.FoodModel.ID)">Save</a>
+            <a onclick="document.getElementById('deleteForm-@displayItem.FoodModel.ID').submit()"><span class="ion-ios-close"></span></a>
     </td>
 </tr>
 }

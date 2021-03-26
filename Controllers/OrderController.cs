@@ -173,6 +173,24 @@ namespace MamaFood.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> Edit(string foodId, string orderId, int qty, double price)
+        {
+            CloudTable detailTable = GetTableStorageInformation("OrderDetails");
+            TableOperation update = TableOperation.Replace(
+                new OrderItem
+                {
+                    PartitionKey = foodId,
+                    RowKey = orderId,
+                    Quantity = qty,
+                    UnitPrice = price,
+                    ETag = "*"
+                });
+            await detailTable.ExecuteAsync(update);
+
+            return RedirectToAction("Cart");
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Delete(string foodId, string orderId)
         {
             CloudTable detailTable = GetTableStorageInformation("OrderDetails");
