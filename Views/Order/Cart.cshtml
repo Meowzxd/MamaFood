@@ -4,14 +4,14 @@
 }
 
 <script>
-    const MinusQuantity = () => {
-        if (document.getElementById("quantity").innerText != 1)
-            document.getElementById("quantity").innerText = parseInt(document.getElementById("quantity").innerText) - 1;
+    const MinusQuantity = (id) => {
+        if (document.getElementById(id).innerText != 1)
+            document.getElementById(id).innerText = parseInt(document.getElementById(id).innerText) - 1;
     }
 
-    const AddQuantity = () => {
-        if (document.getElementById("quantity").innerText != 100)
-            document.getElementById("quantity").innerText = parseInt(document.getElementById("quantity").innerText) + 1;
+    const AddQuantity = (id) => {
+        if (document.getElementById(id).innerText != 100)
+            document.getElementById(id).innerText = parseInt(document.getElementById(id).innerText) + 1;
     }
 
     //const AssignQuantity = () => {
@@ -22,12 +22,13 @@
 
 <h1>Cart [@Model.Count]</h1>
 
-<table class="table">
+<table class="table" style="table-layout: fixed;">
     <tr>
         <th>Food Image</th>
         <th>Food Name</th>
         <th>Unit Price</th>
         <th>Quantity</th>
+        <th>Action</th>
     </tr>
 
 @foreach (var displayItem in Model)
@@ -38,15 +39,15 @@
     <td>RM @string.Format("{0:0.00}", displayItem.OrderItemModel.UnitPrice)</td>
     <td>
         <span class="input-group-btn mr-2">
-            <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="" onclick="MinusQuantity()">
+            <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="" onclick="MinusQuantity(@displayItem.FoodModel.ID)">
                 <i class="ion-ios-remove"></i>
             </button>
         </span>
-        <div id="quantity" style="display: inline;">
+        <div id="@displayItem.FoodModel.ID" style="display: inline;">
             @displayItem.OrderItemModel.Quantity
         </div>
         <span class="input-group-btn ml-2">
-            <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="" onclick="AddQuantity()">
+            <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="" onclick="AddQuantity(@displayItem.FoodModel.ID)">
                 <i class="ion-ios-add"></i>
             </button>
         </span>
