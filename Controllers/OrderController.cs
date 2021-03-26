@@ -205,5 +205,14 @@ namespace MamaFood.Controllers
 
             return RedirectToAction("Cart");
         }
+
+        [HttpPost]
+        public /*async Task<IActionResult>*/ ActionResult CheckOut(string orderId)
+        {
+            // Service Bus Code goes here....
+
+            //return View();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
