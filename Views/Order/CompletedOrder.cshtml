@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Customer Orders";
+}
+<h1>Service Bus</h1>
+
+<table border="1">
+    <tr>
+        <th>No.</th>
+        <th>Order ID</th>
+        <th>Customer Name</th>
+        <th>Approve</th>
+    </tr>
+    @{int i = 0;}
+    @foreach (var order in ViewBag.messages)
+    {
+        <tr>
+            <td>@ViewBag.sequence[i]</td>
+            <td>@order.PartitionKey</td>
+            <td>@order.RowKey</td>
+            <td>
+                <a asp-route-sequence="@ViewBag.sequence[i]" asp-controller="Order" asp-action="Approve">
+                    <button>Approve</button>
+                </a>
+            </td>
+        </tr>
+        i++;
+    }
+</table>

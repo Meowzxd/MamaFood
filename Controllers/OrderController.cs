@@ -1,13 +1,18 @@
 ﻿using MamaFood.Data;
 using MamaFood.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus.Core;
+using Microsoft.Azure.ServiceBus.Management;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MamaFood.Controllers
@@ -85,6 +90,10 @@ namespace MamaFood.Controllers
 
         public async Task<IActionResult> Cart(int? foodID, double price, int? qty)
         {
+            var managementClient = new ManagementClient(ServiceBusConnectionString);
+            var queue = await managementClient.GetQueueRuntimeInfoAsync(QueueName);
+            ViewBag.MessageCount = queue.MessageCount;
+
             CloudTable orderTable = GetTableStorageInformation("Order");
             CloudTable detailTable = GetTableStorageInformation("OrderDetails");
             TableContinuationToken continuationToken;
@@ -206,13 +215,112 @@ namespace MamaFood.Controllers
             return RedirectToAction("Cart");
         }
 
-        [HttpPost]
-        public /*async Task<IActionResult>*/ ActionResult CheckOut(string orderId)
-        {
-            // Service Bus Code goes here....
+        const string ServiceBusConnectionString = "Endpoint=sb://mamafood.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=K4FYofwjtNdkz+tFfxNwGUxgH9UlNJzrErqs1IfALUM=";
+        const string QueueName = "MamaFoodQueue";
 
-            //return View();
-            return RedirectToAction("Index", "Home");
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CheckOut(string orderId)
+        {
+            Order order = new Order
+            {
+                PartitionKey = orderId,
+                RowKey = User.Identity.Name
+            };
+
+            QueueClient queue = new QueueClient(ServiceBusConnectionString, QueueName);
+            if (ModelState.IsValid)
+            {
+                var orderJSON = JsonConvert.SerializeObject(orderId);
+                var message = new Message(Encoding.UTF8.GetBytes(orderJSON))
+                {
+                    MessageId = Guid.NewGuid().ToString(),
+                    ContentType = "application/json"
+                };
+                await queue.SendAsync(message);
+                return RedirectToAction("CompletedOrder");
+            }
+            return RedirectToAction("Cart", order);
+        }
+
+        private static async Task CreateQueueFunctionAsync()
+        {
+            var managementClient = new ManagementClient(ServiceBusConnectionString);
+            bool queueExists = await managementClient.QueueExistsAsync(QueueName);
+            if (!queueExists)
+            {
+                QueueDescription qd = new QueueDescription(QueueName);
+                qd.MaxSizeInMB = 1024;
+                qd.MaxDeliveryCount = 3;
+                await managementClient.CreateQueueAsync(qd);
+            }
+        }
+
+        public static void Initialize()
+        {
+            CreateQueueFunctionAsync().GetAwaiter().GetResult();
+        }
+
+        public async Task<ActionResult> CompletedOrder()
+        {
+            // Connect to the same queue
+            var managementClient = new ManagementClient(ServiceBusConnectionString);
+            var queue = await managementClient.GetQueueRuntimeInfoAsync(QueueName);
+
+            List<Order> messages = new List<Order>();
+            List<long> sequence = new List<long>();
+
+            // Collect the sequence number and each message content from the queue
+            MessageReceiver messageReceiver = new MessageReceiver(ServiceBusConnectionString,
+            QueueName);
+            for (int i = 0; i < queue.MessageCount; i++)
+            {
+                Message message = await messageReceiver.PeekAsync();
+                string result = JsonConvert.DeserializeObject<string>(Encoding.UTF8.GetString(message.Body));
+                Order completedOrder = new Order
+                {
+                    PartitionKey = result,
+                    RowKey = User.Identity.Name
+                };
+                sequence.Add(message.SystemProperties.SequenceNumber);
+                messages.Add(completedOrder);
+            }
+
+            // Bring all the collected information to the frontend page
+            ViewBag.sequence = sequence;
+            ViewBag.messages = messages;
+            return View();
+        }
+
+        public async Task<ActionResult> Approve(long sequence)
+        {
+            // Connect to the same queue
+            var managementClient = new ManagementClient(ServiceBusConnectionString);
+            var queue = await managementClient.GetQueueRuntimeInfoAsync(QueueName);
+
+            // Receive the selected message
+            MessageReceiver messageReceiver = new MessageReceiver(ServiceBusConnectionString,
+            QueueName);
+            String result = null;
+            for (int i = 0; i < queue.MessageCount; i++)
+            {
+                Message message = await messageReceiver.ReceiveAsync();
+                string token = message.SystemProperties.LockToken;
+
+                // To find the selected message - read and remove from the queue
+                if (message.SystemProperties.SequenceNumber == sequence)
+                {
+                    result = JsonConvert.DeserializeObject<string>(Encoding.UTF8.GetString(message.Body));
+                    Order completedOrder = new Order
+                    {
+                        PartitionKey = result,
+                        RowKey = User.Identity.Name
+                    };
+                    await messageReceiver.CompleteAsync(token);
+                    break;
+                }
+            }
+            return RedirectToAction("CompletedOrder");
         }
     }
 }
