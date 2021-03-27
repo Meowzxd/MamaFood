@@ -10,6 +10,9 @@ using Microsoft.Extensions.Azure;
 using Azure.Core.Extensions;
 using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
+using System.Threading.Tasks;
+using MamaFood.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace MamaFood
 {
@@ -43,7 +46,7 @@ namespace MamaFood
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider service)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
         {
             if (env.IsDevelopment())
             {
@@ -71,6 +74,20 @@ namespace MamaFood
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            CreateUserRoles(services).Wait();
+        }
+
+        private async Task CreateUserRoles(IServiceProvider serviceProvider)
+        {
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<MamaFoodUser>>();
+
+            //Assign Admin role to the main User here we have given our newly registered 
+            //login id for Admin management
+            MamaFoodUser user = await UserManager.FindByEmailAsync("admin@sample.com");
+            var User = new MamaFoodUser();
+            await UserManager.AddToRoleAsync(user, "Admin");
         }
 
 
