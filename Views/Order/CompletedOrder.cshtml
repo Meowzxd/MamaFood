@@ -3,7 +3,7 @@
 }
 <h1>Service Bus</h1>
 
-<table border="1">
+<table class="table">
     <tr>
         <th>No.</th>
         <th>Order ID</th>
@@ -17,9 +17,9 @@
             <td>@ViewBag.sequence[i]</td>
             <td>@order.PartitionKey</td>
             <td>@order.RowKey</td>
-            <td>
+            <td class="product-remove">
                 <a asp-route-sequence="@ViewBag.sequence[i]" asp-controller="Order" asp-action="Approve">
-                    <button>Approve</button>
+                    <span class="ion-ios-checkmark"></span>
                 </a>
             </td>
         </tr>

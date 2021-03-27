@@ -15,49 +15,74 @@
     }
 </script>
 
-<h1>Cart [@Model.Count]</h1>
-
-<form id="CheckOutForm" asp-action="CheckOut" asp-route-orderId="@Model[0].OrderItemModel.RowKey">
-    <a onclick="document.getElementById('CheckOutForm').submit()">Check Out My Order</a>
-</form>
-
-<table class="table" style="table-layout: fixed;">
-    <tr>
-        <th>Food Image</th>
-        <th>Food Name</th>
-        <th>Unit Price</th>
-        <th>Quantity</th>
-        <th>Action</th>
-    </tr>
-
-@foreach (var displayItem in Model)
-{
-<tr>
-    <td><img src=@displayItem.FoodModel.FoodImage alt=@displayItem.FoodModel.FoodName width="180px" height="150px" /></td>
-    <td>@displayItem.FoodModel.FoodName</td>
-    <td>RM @string.Format("{0:0.00}", displayItem.OrderItemModel.UnitPrice)</td>
-    <td>
-        <form id="editForm-@displayItem.FoodModel.ID" asp-action="Edit" asp-route-foodId="@displayItem.OrderItemModel.PartitionKey" asp-route-orderId="@displayItem.OrderItemModel.RowKey" asp-route-price="@displayItem.OrderItemModel.UnitPrice">
-            <span class="input-group-btn mr-2">
-                <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="" onclick="MinusQuantity(@displayItem.FoodModel.ID)">
-                    <i class="ion-ios-remove"></i>
-                </button>
-            </span>
-            <div style="display: inline;">
-                <input readonly id="@displayItem.FoodModel.ID" value="@displayItem.OrderItemModel.Quantity" style="width: 40px; text-align: center;" />
+<div class="hero-wrap hero-bread" style="background-image: url('../../img/4.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Cart</span></p>
+                <h1 class="mb-0 bread">My Cart [@Model.Count]</h1>
             </div>
-            <span class="input-group-btn ml-2">
-                <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="" onclick="AddQuantity(@displayItem.FoodModel.ID)">
-                    <i class="ion-ios-add"></i>
-                </button>
-            </span>
-        </form>
-    </td>
-    <td class="product-remove">
-        <form id="deleteForm-@displayItem.FoodModel.ID" asp-action="Delete" asp-route-foodId="@displayItem.OrderItemModel.PartitionKey" asp-route-orderId="@displayItem.OrderItemModel.RowKey"></form>
-            <a onclick="AssignQuantity(@displayItem.FoodModel.ID)">Save</a>
-            <a onclick="document.getElementById('deleteForm-@displayItem.FoodModel.ID').submit()"><span class="ion-ios-close"></span></a>
-    </td>
-</tr>
-}
-</table>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section ftco-cart" style="margin-top:-60px;">
+    <div class="row justify-content-end">
+        <div class="col-lg-3 cart-wrap ftco-animate">
+            <form id="CheckOutForm" asp-action="CheckOut" asp-route-orderId="@Model[0].OrderItemModel.RowKey">
+                <p><a onclick="document.getElementById('CheckOutForm').submit()" class="btn btn-primary py-3 px-4" style="color:white;">Proceed to Checkout</a></p>
+            </form>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 ftco-animate">
+                <div class="cart-list">
+                    <table class="table">
+                        <thead class="thead-primary">
+                            <tr class="text-center">
+                                <th>Food Image</th>
+                                <th>Food Name</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var displayItem in Model)
+                            {
+                                <tr class="text-center">
+                                    <td class="image-prod"><img src=@displayItem.FoodModel.FoodImage alt=@displayItem.FoodModel.FoodName width="180px" height="150px" /></td>
+                                    <td class="product-name">@displayItem.FoodModel.FoodName</td>
+                                    <td class="price">RM @string.Format("{0:0.00}", displayItem.OrderItemModel.UnitPrice)</td>
+                                    <td class="quantity">
+                                        <form id="editForm-@displayItem.FoodModel.ID" asp-action="Edit" asp-route-foodId="@displayItem.OrderItemModel.PartitionKey" asp-route-orderId="@displayItem.OrderItemModel.RowKey" asp-route-price="@displayItem.OrderItemModel.UnitPrice">
+                                            <span class="input-group-btn mr-2">
+                                                <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="" onclick="MinusQuantity(@displayItem.FoodModel.ID)" style="box-shadow:none; bordeR: 0px none rgba(0, 0, 0, 0) !important">
+                                                    <i class="ion-ios-remove"></i>
+                                                </button>
+                                            </span>
+                                            <div style="display: inline;">
+                                                <input readonly id="@displayItem.FoodModel.ID" value="@displayItem.OrderItemModel.Quantity" style="width: 40px; text-align: center;" />
+                                            </div>
+                                            <span class="input-group-btn ml-2">
+                                                <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="" onclick="AddQuantity(@displayItem.FoodModel.ID)" style="box-shadow: none; bordeR: 0px none rgba(0, 0, 0, 0) !important">
+                                                    <i class="ion-ios-add"></i>
+                                                </button>
+                                            </span>
+                                        </form>
+                                    </td>
+                                    <td class="product-remove">
+                                        <form id="deleteForm-@displayItem.FoodModel.ID" asp-action="Delete" asp-route-foodId="@displayItem.OrderItemModel.PartitionKey" asp-route-orderId="@displayItem.OrderItemModel.RowKey"></form>
+                                        <a onclick="AssignQuantity(@displayItem.FoodModel.ID)">Save</a>
+                                        <a onclick="document.getElementById('deleteForm-@displayItem.FoodModel.ID').submit()"><span class="ion-ios-close"></span></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
