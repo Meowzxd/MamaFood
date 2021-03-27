@@ -43,7 +43,7 @@ namespace MamaFood
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider service)
         {
             if (env.IsDevelopment())
             {
@@ -72,6 +72,10 @@ namespace MamaFood
                 endpoints.MapRazorPages();
             });
         }
+
+
+
+
     }
     internal static class StartupExtensions
     {

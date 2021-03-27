@@ -1,0 +1,14 @@
+﻿<h1 >All Users</h1>
+<a asp-action="Create" class="btn btn-secondary">Create User</a>
+
+<table class="tbale table-sm table-bordered">
+    <tr><th>ID</th><th>Email</th></tr>
+    @foreach (MamaFood.Areas.Identity.Data.MamaFoodUser user in Model)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Email</td>
+        </tr>
+    }
+
+</table>
