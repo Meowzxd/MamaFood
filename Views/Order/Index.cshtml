@@ -17,7 +17,6 @@
                         <table class="table">
                             <thead class="thead-primary">
                                 <tr class="text-center">
-                                    <th>&nbsp;</th>
                                     <th>Order Number</th>
                                     <th>Customer Name</th>
                                     <th>Order Status</th>
@@ -28,12 +27,6 @@
                                 @foreach (var displayresult in Model)
                                 {
                                     <tr class="text-center">
-                                        <td class="product-remove">
-                                            @*<a asp-route-PartitionKey="@displayresult.PartitionKey" asp-route-RowKey="@displayresult.RowKey" asp-controller="Order" asp-action="Delete">
-                                                <button>Delete</button>
-                                            </a>*@
-                                            <a><span class="ion-ios-close"></span></a>
-                                        </td>
                                         <td class="image-prod">@displayresult.PartitionKey</td>
                                         <td class="product-name" style="width:300px;">@displayresult.RowKey</td>
                                         <td class="price">@displayresult.OrderStatus</td>

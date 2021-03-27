@@ -240,7 +240,7 @@ namespace MamaFood.Controllers
                     ContentType = "application/json"
                 };
                 await queue.SendAsync(message);
-                return RedirectToAction("CompletedOrder");
+                return RedirectToAction("OrderApproval");
             }
             return RedirectToAction("Cart", order);
         }
@@ -263,7 +263,7 @@ namespace MamaFood.Controllers
             CreateQueueFunctionAsync().GetAwaiter().GetResult();
         }
 
-        public async Task<ActionResult> CompletedOrder()
+        public async Task<ActionResult> OrderApproval()
         {
             // Connect to the same queue
             var managementClient = new ManagementClient(ServiceBusConnectionString);
@@ -279,13 +279,13 @@ namespace MamaFood.Controllers
             {
                 Message message = await messageReceiver.PeekAsync();
                 string result = JsonConvert.DeserializeObject<string>(Encoding.UTF8.GetString(message.Body));
-                Order completedOrder = new Order
+                Order confirmedOrder = new Order
                 {
                     PartitionKey = result,
                     RowKey = User.Identity.Name
                 };
                 sequence.Add(message.SystemProperties.SequenceNumber);
-                messages.Add(completedOrder);
+                messages.Add(confirmedOrder);
             }
 
             // Bring all the collected information to the frontend page
@@ -313,16 +313,25 @@ namespace MamaFood.Controllers
                 if (message.SystemProperties.SequenceNumber == sequence)
                 {
                     result = JsonConvert.DeserializeObject<string>(Encoding.UTF8.GetString(message.Body));
-                    Order completedOrder = new Order
+                    Order confirmedOrder = new Order
                     {
                         PartitionKey = result,
                         RowKey = User.Identity.Name
                     };
+
+                    // Complete the message
                     await messageReceiver.CompleteAsync(token);
+
+                    // Update order status in Table Storage
+                    CloudTable orderTable = GetTableStorageInformation("Order");
+                    confirmedOrder.ETag = "*";
+                    confirmedOrder.OrderStatus = "Approved";
+                    TableOperation update = TableOperation.Replace(confirmedOrder);
+                    await orderTable.ExecuteAsync(update);
                     break;
                 }
             }
-            return RedirectToAction("CompletedOrder");
+            return RedirectToAction("OrderApproval");
         }
     }
 }
