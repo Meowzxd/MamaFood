@@ -21,6 +21,7 @@ namespace MamaFood.Areas.Identity
                         context.Configuration.GetConnectionString("MamaFoodContextConnection")));
 
                 services.AddDefaultIdentity<MamaFoodUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<MamaFoodContext>();
             });
         }
