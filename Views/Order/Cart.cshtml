@@ -13,13 +13,23 @@
         if (document.getElementById(id).value != 100)
             document.getElementById(id).value = parseInt(document.getElementById(id).value) + 1;
     }
+
+    const SaveQuantity = id => {
+        const editForm = document.getElementById('editForm-' + id);
+
+        // Assign quantity to payload
+        let action = editForm.getAttribute('action');
+        editForm.setAttribute('action', action + '&qty=' + document.getElementById(id).value);
+
+        editForm.submit();
+    }
 </script>
 
 <div class="hero-wrap hero-bread" style="background-image: url('../../img/4.jpg');">
     <div class="container">
         <div class="row no-gutters slider-text align-items-center justify-content-center">
             <div class="col-md-9 ftco-animate text-center">
-                <p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Cart</span></p>
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Cart</span></p>
                 <h1 class="mb-0 bread">My Cart [@Model.Count]</h1>
             </div>
         </div>
@@ -29,7 +39,7 @@
 <section class="ftco-section ftco-cart" style="margin-top:-60px;">
     <div class="row justify-content-end">
         <div class="col-lg-3 cart-wrap ftco-animate">
-            <form id="CheckOutForm" asp-action="CheckOut" asp-route-orderId="@Model[0].OrderItemModel.RowKey">
+            <form id="CheckOutForm" asp-action="CheckOut" asp-route-orderId="@ViewBag.orderId">
                 <p><a onclick="document.getElementById('CheckOutForm').submit()" class="btn btn-primary py-3 px-4" style="color:white;">Proceed to Checkout</a></p>
             </form>
         </div>
@@ -74,7 +84,7 @@
                                     </td>
                                     <td class="product-remove">
                                         <form id="deleteForm-@displayItem.FoodModel.ID" asp-action="Delete" asp-route-foodId="@displayItem.OrderItemModel.PartitionKey" asp-route-orderId="@displayItem.OrderItemModel.RowKey"></form>
-                                        <a onclick="AssignQuantity(@displayItem.FoodModel.ID)">Save</a>
+                                        <a onclick="SaveQuantity(@displayItem.FoodModel.ID)">Save</a>
                                         <a onclick="document.getElementById('deleteForm-@displayItem.FoodModel.ID').submit()"><span class="ion-ios-close"></span></a>
                                     </td>
                                 </tr>

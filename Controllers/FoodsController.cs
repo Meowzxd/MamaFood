@@ -88,7 +88,7 @@ namespace MamaFood.Views.Foods
                 _context.Add(food);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("Menu", "Blobs");
+                return RedirectToAction("Menu");
             }
             return View(food);
         }

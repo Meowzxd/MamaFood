@@ -129,6 +129,8 @@ namespace MamaFood.Controllers
                 order = results[0]; // Link to existing order
             }
 
+            ViewBag.orderId = order.PartitionKey; // Store order ID for assignment of params in View
+
             if (foodID != null && qty != null) // New food added
             {
                 try
