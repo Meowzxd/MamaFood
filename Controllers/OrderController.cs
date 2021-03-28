@@ -1,5 +1,6 @@
 ﻿using MamaFood.Data;
 using MamaFood.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
@@ -44,6 +45,8 @@ namespace MamaFood.Controllers
             
             return table;
         }
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             CloudTable table = GetTableStorageInformation("Order");
@@ -88,6 +91,7 @@ namespace MamaFood.Controllers
             //return View();
         }
 
+        [Authorize]
         public async Task<IActionResult> Cart(int? foodID, double price, int? qty)
         {
             var managementClient = new ManagementClient(ServiceBusConnectionString);
@@ -184,6 +188,7 @@ namespace MamaFood.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Edit(string foodId, string orderId, int qty, double price)
         {
             CloudTable detailTable = GetTableStorageInformation("OrderDetails");
@@ -202,6 +207,7 @@ namespace MamaFood.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Delete(string foodId, string orderId)
         {
             CloudTable detailTable = GetTableStorageInformation("OrderDetails");
@@ -222,6 +228,7 @@ namespace MamaFood.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<ActionResult> CheckOut(string orderId)
         {
             Order order = new Order
@@ -263,6 +270,7 @@ namespace MamaFood.Controllers
             CreateQueueFunctionAsync().GetAwaiter().GetResult();
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> OrderApproval()
         {
             // Connect to the same queue
@@ -294,6 +302,7 @@ namespace MamaFood.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Approve(long sequence)
         {
             // Connect to the same queue

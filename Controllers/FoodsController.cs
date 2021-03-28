@@ -12,6 +12,7 @@ using Microsoft.WindowsAzure.Storage;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MamaFood.Views.Foods
 {
@@ -24,16 +25,17 @@ namespace MamaFood.Views.Foods
             _context = context;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Food.ToListAsync());
         }
-
+        [Authorize]
         public async Task<IActionResult> Menu()
         {
             return View(await _context.Food.ToListAsync());
         }
-
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -51,6 +53,7 @@ namespace MamaFood.Views.Foods
             return View(food);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -72,6 +75,7 @@ namespace MamaFood.Views.Foods
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("ID,ImageFile,FoodName,FoodType,Price")] Food food)
         {
             if (ModelState.IsValid)
@@ -92,7 +96,7 @@ namespace MamaFood.Views.Foods
             }
             return View(food);
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -110,6 +114,7 @@ namespace MamaFood.Views.Foods
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,ImageFile,FoodImage,FoodName,FoodType,Price")] Food food)
         {
             if (id != food.ID)
@@ -148,7 +153,7 @@ namespace MamaFood.Views.Foods
             }
             return View(food);
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -168,6 +173,7 @@ namespace MamaFood.Views.Foods
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var food = await _context.Food.FindAsync(id);
