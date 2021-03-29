@@ -3,12 +3,23 @@
     ViewData["Title"] = "Customer Orders";
 }
 
-<h1>Customer Orders</h1>
+<div class="hero-wrap hero-bread" style="background-image: url('../../img/5.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Customer Orders</span></p>
+                <h1 class="mb-0 bread">Customer Orders</h1>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="OrderApproval">View Placed Orders</a>
-</p>
-<section class="ftco-section ftco-cart">
+<section class="ftco-section ftco-cart" style="margin-top:-60px;">
+    <div class="row justify-content-end">
+        <div class="col-lg-3 cart-wrap ftco-animate">
+            <p><a asp-action="OrderApproval" class="btn btn-primary py-3 px-4">Pending Order Approval</a></p>
+        </div>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-md-12 ftco-animate">

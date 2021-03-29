@@ -5,49 +5,71 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="hero-wrap hero-bread" style="background-image: url('../../img/2.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Foods</span></p>
+                <h1 class="mb-0 bread">All Foods</h1>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FoodImage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FoodName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FoodType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                <img src=@Html.DisplayFor(modelItem => item.FoodImage) alt="Image" width="180px" height="150px"/>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FoodName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FoodType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<section class="ftco-section ftco-cart" style="margin-top:-60px;">
+    <div class="row justify-content-end">
+        <div class="col-lg-2 cart-wrap ftco-animate">
+                <p><a asp-action="Create" class="btn btn-primary py-3 px-4">Add Food</a></p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 ftco-animate">
+                <div class="cart-list">
+                    <table class="table">
+                        <thead class="thead-primary">
+                            <tr class="text-center">
+                                <th>
+                                    @Html.DisplayNameFor(model => model.FoodImage)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.FoodName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.FoodType)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Price)
+                                </th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr class="text-center">
+                                    <td class="image-prod">
+                                        <img src=@Html.DisplayFor(modelItem => item.FoodImage) alt=@Html.DisplayNameFor(model => model.FoodName) width="180px" height="150px" />
+                                    </td>
+                                    <td class="product-name">
+                                        @Html.DisplayFor(modelItem => item.FoodName)
+                                    </td>
+                                    <td class="price">
+                                        @Html.DisplayFor(modelItem => item.FoodType)
+                                    </td>
+                                    <td class="price">
+                                        @Html.DisplayFor(modelItem => item.Price)
+                                    </td>
+                                    <td class="product-remove">
+                                        <a asp-action="Edit" asp-route-id="@item.ID"><span class="ion-ios-create"></span></a>
+                                        <a asp-action="Delete" asp-route-id="@item.ID"><span class="ion-ios-close"></span></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -5,44 +5,57 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
-
-<h4>Food</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            <div class="form-group">
-                <label asp-for="ImageFile" class="control-label"></label>
-                <input asp-for="ImageFile" class="form-control" type="file"/>
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
+<div class="hero-wrap hero-bread" style="background-image: url('../../img/7.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Edit Food</span></p>
+                <h1 class="mb-0 bread">Edit Food</h1>
             </div>
-            <div class="form-group">
-                <label asp-for="FoodName" class="control-label"></label>
-                <input asp-for="FoodName" class="form-control" />
-                <span asp-validation-for="FoodName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FoodType" class="control-label"></label>
-                <input asp-for="FoodType" class="form-control" />
-                <span asp-validation-for="FoodType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="container">
+    <div class="bg-white p-5 contact-form">
+        <div>
+            <a asp-action="Index" class="btn btn-primary py-3 px-4"><span class="ion-ios-arrow-back"></span>&nbsp;&nbsp;Back to List</a>
+        </div>
+        <h2 class="mb-4" style="text-align: center;">Edit Food</h2>
+        <div class="form-group">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <form asp-action="Edit" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="ID" />
+                        <div class="form-group">
+                            <label asp-for="ImageFile" class="control-label"></label>
+                            <input asp-for="ImageFile" class="form-control" type="file" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FoodName" class="control-label"></label>
+                            <input asp-for="FoodName" class="form-control" />
+                            <span asp-validation-for="FoodName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FoodType" class="control-label"></label>
+                            <input asp-for="FoodType" class="form-control" />
+                            <span asp-validation-for="FoodType" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Price" class="control-label"></label>
+                            <input asp-for="Price" class="form-control" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <center><input type="submit" value="Save" class="btn btn-primary py-3 px-4" /></center>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

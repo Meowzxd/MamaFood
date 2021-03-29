@@ -1,34 +1,60 @@
 ﻿@{
     ViewData["Title"] = "Customer Orders";
 }
-<h1>Service Bus</h1>
 
-<p>
-    <a asp-action="Index">View All Orders</a>
-</p>
-<table class="table">
-    <tr>
-        <th>No.</th>
-        <th>Order ID</th>
-        <th>Customer Name</th>
-        <th>Approve/Reject</th>
-    </tr>
-    @{int i = 0;}
-    @foreach (var order in ViewBag.messages)
-    {
-        <tr>
-            <td>@ViewBag.sequence[i]</td>
-            <td>@order.PartitionKey</td>
-            <td>@order.RowKey</td>
-            <td class="product-remove">
-                <a asp-controller="Order" asp-action="Approve" asp-route-sequence="@ViewBag.sequence[i]" asp-route-status="Approved">
-                    <span class="ion-ios-checkmark"></span>
-                </a>
-                <a asp-controller="Order" asp-action="Approve" asp-route-sequence="@ViewBag.sequence[i]" asp-route-status="Rejected">
-                    <span class="ion-ios-close"></span>
-                </a>
-            </td>
-        </tr>
-        i++;
-    }
-</table>
+<div class="hero-wrap hero-bread" style="background-image: url('../../img/3.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Order Approval</span></p>
+                <h1 class="mb-0 bread">Pending Orders</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section ftco-cart" style="margin-top:-60px;">
+    <div class="row justify-content-end">
+        <div class="col-lg-2 cart-wrap ftco-animate">
+            <p><a asp-action="Index" class="btn btn-primary py-3 px-4">All Orders</a></p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 ftco-animate">
+                <div class="cart-list">
+                    <table class="table">
+                        <thead class="thead-primary">
+                            <tr class="text-center">
+                                <th>No.</th>
+                                <th>Order ID</th>
+                                <th>Customer Name</th>
+                                <th style="width: 220px;">Approve/Reject</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{int i = 0;}
+                            @foreach (var order in ViewBag.messages)
+                            {
+                                <tr class="text-center">
+                                    <td class="product-name">@ViewBag.sequence[i]</td>
+                                    <td class="product-price">@order.PartitionKey</td>
+                                    <td class="product-category">@order.RowKey</td>
+                                    <td class="product-remove">
+                                        <a asp-controller="Order" asp-action="Approve" asp-route-sequence="@ViewBag.sequence[i]" asp-route-status="Approved">
+                                            <span class="ion-ios-checkmark"></span>
+                                        </a>&nbsp;
+                                        <a asp-controller="Order" asp-action="Approve" asp-route-sequence="@ViewBag.sequence[i]" asp-route-status="Rejected">
+                                            <span class="ion-ios-close"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
