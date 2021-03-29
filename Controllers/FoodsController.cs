@@ -94,7 +94,7 @@ namespace MamaFood.Views.Foods
                 _context.Add(food);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("Menu");
+                return RedirectToAction("Index");
             }
             return View(food);
         }
