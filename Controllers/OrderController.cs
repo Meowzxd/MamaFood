@@ -76,7 +76,7 @@ namespace MamaFood.Controllers
             return View(results);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Cart(int? foodID, double price, int? qty)
         {
             var managementClient = new ManagementClient(configure["ConnectionStrings:ServiceBusConnection"]);
@@ -174,7 +174,7 @@ namespace MamaFood.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Edit(string foodId, string orderId, int qty, double price)
         {
             CloudTable detailTable = GetTableStorageInformation("OrderDetails");
@@ -194,7 +194,7 @@ namespace MamaFood.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Delete(string foodId, string orderId)
         {
             CloudTable detailTable = GetTableStorageInformation("OrderDetails");
@@ -212,7 +212,7 @@ namespace MamaFood.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<ActionResult> CheckOut(string orderId)
         {
             Order order = new Order

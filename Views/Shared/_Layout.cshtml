@@ -43,13 +43,6 @@
                     <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                @if (User.Identity.IsAuthenticated)
-                                    if (User.IsInRole("Admin"))
-                                    {
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Userinfo" asp-action="Index">Manage User</a>
-                                    }
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="nav-item">

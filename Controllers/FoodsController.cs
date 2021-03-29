@@ -30,12 +30,14 @@ namespace MamaFood.Views.Foods
         {
             return View(await _context.Food.ToListAsync());
         }
-        [Authorize]
+
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Menu()
         {
             return View(await _context.Food.ToListAsync());
         }
-        [Authorize]
+
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -96,6 +98,7 @@ namespace MamaFood.Views.Foods
             }
             return View(food);
         }
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -153,6 +156,7 @@ namespace MamaFood.Views.Foods
             }
             return View(food);
         }
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {

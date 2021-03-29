@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 
 namespace MamaFood.Controllers
 {
-    [Authorize (Roles = "Admin")]
-
     public class UserInfoController : Controller
     {
         private UserManager<MamaFoodUser> UserManager;
@@ -19,9 +17,11 @@ namespace MamaFood.Controllers
         {
             UserManager = usrMgr;
         }
+
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
-            return View(UserManager.Users);
+            return View(UserManager.Users.ToList());
         }
     }
 }

@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 
 namespace MamaFood.Controllers
 {
-
-
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
@@ -19,6 +17,7 @@ namespace MamaFood.Controllers
             this.roleManager = roleManager;
         }
 
+        [Authorize(Roles = "None")]
         public IActionResult Index()
         {
             var roles = roleManager.Roles.ToList();
@@ -31,6 +30,8 @@ namespace MamaFood.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "None")]
         public async Task<IActionResult> Create(IdentityRole role)
         {
             await roleManager.CreateAsync(role);
