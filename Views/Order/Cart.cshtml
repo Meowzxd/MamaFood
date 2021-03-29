@@ -40,7 +40,7 @@
     <div class="row justify-content-end">
         <div class="col-lg-3 cart-wrap ftco-animate">
             <form id="CheckOutForm" asp-action="CheckOut" asp-route-orderId="@ViewBag.orderId">
-                <p><a onclick="document.getElementById('CheckOutForm').submit()" class="btn btn-primary py-3 px-4" style="color:white;">Proceed to Checkout</a></p>
+                <p><input type="submit" value="Proceed to Checkout" class="btn btn-primary py-3 px-4" @(Model.Count == 0 ? "disabled" : "") /></p>
             </form>
         </div>
     </div>

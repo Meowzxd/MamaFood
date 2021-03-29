@@ -3,12 +3,15 @@
 }
 <h1>Service Bus</h1>
 
+<p>
+    <a asp-action="Index">View All Orders</a>
+</p>
 <table class="table">
     <tr>
         <th>No.</th>
         <th>Order ID</th>
         <th>Customer Name</th>
-        <th>Approve</th>
+        <th>Approve/Reject</th>
     </tr>
     @{int i = 0;}
     @foreach (var order in ViewBag.messages)
@@ -18,8 +21,11 @@
             <td>@order.PartitionKey</td>
             <td>@order.RowKey</td>
             <td class="product-remove">
-                <a asp-route-sequence="@ViewBag.sequence[i]" asp-controller="Order" asp-action="Approve">
+                <a asp-controller="Order" asp-action="Approve" asp-route-sequence="@ViewBag.sequence[i]" asp-route-status="Approved">
                     <span class="ion-ios-checkmark"></span>
+                </a>
+                <a asp-controller="Order" asp-action="Approve" asp-route-sequence="@ViewBag.sequence[i]" asp-route-status="Rejected">
+                    <span class="ion-ios-close"></span>
                 </a>
             </td>
         </tr>

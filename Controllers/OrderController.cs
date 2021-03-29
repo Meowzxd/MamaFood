@@ -21,21 +21,18 @@ namespace MamaFood.Controllers
     public class OrderController : Controller
     {
         private readonly FoodContext _context;
+        private static readonly string QueueName = "MamaFoodQueue";
+        private static IConfigurationRoot configure;
 
         public OrderController(FoodContext context)
         {
             _context = context;
+            configure = GetAppConfiguration();
         }
 
         private CloudTable GetTableStorageInformation(string tableName)
         {
-            //step 1: read json
-            var builder = new ConfigurationBuilder()
-                            .SetBasePath(Directory.GetCurrentDirectory())
-                            .AddJsonFile("appsettings.json");
-            IConfigurationRoot configure = builder.Build();
-
-            //to get key access
+            //step 1: read json to get key access
             //once link, time to read the content to get the connectionstring
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(configure["ConnectionStrings:StorageConnection"]);
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
@@ -44,6 +41,16 @@ namespace MamaFood.Controllers
             CloudTable table = tableClient.GetTableReference(tableName);
             
             return table;
+        }
+
+        private static IConfigurationRoot GetAppConfiguration()
+        {
+            var builder = new ConfigurationBuilder()
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .AddJsonFile("appsettings.json");
+            IConfigurationRoot configure = builder.Build();
+
+            return configure;
         }
 
         [Authorize(Roles = "Admin")]
@@ -64,37 +71,15 @@ namespace MamaFood.Controllers
 
             } while (continuationToken != null);
 
+            results = results.OrderByDescending(i => i.Timestamp).ToList();
+
             return View(results);
-
-            //CloudTable table = GetTableStorageInformation();
-
-            //try
-            //{
-
-            //TableOperation retrieve = TableOperation.Retrieve<List<Order>>;
-            //TableResult result = table.ExecuteAsync(retrieve).Result;
-            /*if (result.Etag != null)
-            {
-                return View(result);
-            }
-            else
-            {
-                ViewBag.msg = "Data does not exist.";
-            }*/
-            //}
-            //catch (Exception ex)
-            //{
-            //    ViewBag.msg = ex.ToString();
-            //}
-
-            //var results = GetOrders();
-            //return View();
         }
 
         [Authorize]
         public async Task<IActionResult> Cart(int? foodID, double price, int? qty)
         {
-            var managementClient = new ManagementClient(ServiceBusConnectionString);
+            var managementClient = new ManagementClient(configure["ConnectionStrings:ServiceBusConnection"]);
             var queue = await managementClient.GetQueueRuntimeInfoAsync(QueueName);
             ViewBag.MessageCount = queue.MessageCount;
 
@@ -188,6 +173,7 @@ namespace MamaFood.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> Edit(string foodId, string orderId, int qty, double price)
         {
@@ -207,6 +193,7 @@ namespace MamaFood.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> Delete(string foodId, string orderId)
         {
@@ -223,9 +210,6 @@ namespace MamaFood.Controllers
             return RedirectToAction("Cart");
         }
 
-        const string ServiceBusConnectionString = "Endpoint=sb://mamafood.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=K4FYofwjtNdkz+tFfxNwGUxgH9UlNJzrErqs1IfALUM=";
-        const string QueueName = "MamaFoodQueue";
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -237,30 +221,39 @@ namespace MamaFood.Controllers
                 RowKey = User.Identity.Name
             };
 
-            QueueClient queue = new QueueClient(ServiceBusConnectionString, QueueName);
+            QueueClient queue = new QueueClient(GetAppConfiguration()["ConnectionStrings:ServiceBusConnection"], QueueName);
             if (ModelState.IsValid)
             {
-                var orderJSON = JsonConvert.SerializeObject(orderId);
+                var orderJSON = JsonConvert.SerializeObject(order);
                 var message = new Message(Encoding.UTF8.GetBytes(orderJSON))
                 {
                     MessageId = Guid.NewGuid().ToString(),
                     ContentType = "application/json"
                 };
                 await queue.SendAsync(message);
-                return RedirectToAction("OrderApproval");
+
+                // Update order status in Table Storage
+                CloudTable orderTable = GetTableStorageInformation("Order");
+                order.ETag = "*";
+                order.OrderStatus = "Confirmed";
+                TableOperation update = TableOperation.Replace(order);
+                await orderTable.ExecuteAsync(update);
             }
-            return RedirectToAction("Cart", order);
+
+            return RedirectToAction("Cart");
         }
 
         private static async Task CreateQueueFunctionAsync()
         {
-            var managementClient = new ManagementClient(ServiceBusConnectionString);
+            var managementClient = new ManagementClient(GetAppConfiguration()["ConnectionStrings:ServiceBusConnection"]);
             bool queueExists = await managementClient.QueueExistsAsync(QueueName);
             if (!queueExists)
             {
-                QueueDescription qd = new QueueDescription(QueueName);
-                qd.MaxSizeInMB = 1024;
-                qd.MaxDeliveryCount = 3;
+                QueueDescription qd = new QueueDescription(QueueName)
+                {
+                    MaxSizeInMB = 1024,
+                    MaxDeliveryCount = 3
+                };
                 await managementClient.CreateQueueAsync(qd);
             }
         }
@@ -274,24 +267,18 @@ namespace MamaFood.Controllers
         public async Task<ActionResult> OrderApproval()
         {
             // Connect to the same queue
-            var managementClient = new ManagementClient(ServiceBusConnectionString);
+            var managementClient = new ManagementClient(configure["ConnectionStrings:ServiceBusConnection"]);
             var queue = await managementClient.GetQueueRuntimeInfoAsync(QueueName);
 
             List<Order> messages = new List<Order>();
             List<long> sequence = new List<long>();
 
             // Collect the sequence number and each message content from the queue
-            MessageReceiver messageReceiver = new MessageReceiver(ServiceBusConnectionString,
-            QueueName);
+            MessageReceiver messageReceiver = new MessageReceiver(configure["ConnectionStrings:ServiceBusConnection"], QueueName);
             for (int i = 0; i < queue.MessageCount; i++)
             {
                 Message message = await messageReceiver.PeekAsync();
-                string result = JsonConvert.DeserializeObject<string>(Encoding.UTF8.GetString(message.Body));
-                Order confirmedOrder = new Order
-                {
-                    PartitionKey = result,
-                    RowKey = User.Identity.Name
-                };
+                Order confirmedOrder = JsonConvert.DeserializeObject<Order>(Encoding.UTF8.GetString(message.Body));
                 sequence.Add(message.SystemProperties.SequenceNumber);
                 messages.Add(confirmedOrder);
             }
@@ -303,16 +290,14 @@ namespace MamaFood.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> Approve(long sequence)
+        public async Task<ActionResult> Approve(long sequence, string status)
         {
             // Connect to the same queue
-            var managementClient = new ManagementClient(ServiceBusConnectionString);
+            var managementClient = new ManagementClient(configure["ConnectionStrings:ServiceBusConnection"]);
             var queue = await managementClient.GetQueueRuntimeInfoAsync(QueueName);
 
             // Receive the selected message
-            MessageReceiver messageReceiver = new MessageReceiver(ServiceBusConnectionString,
-            QueueName);
-            String result = null;
+            MessageReceiver messageReceiver = new MessageReceiver(configure["ConnectionStrings:ServiceBusConnection"], QueueName);
             for (int i = 0; i < queue.MessageCount; i++)
             {
                 Message message = await messageReceiver.ReceiveAsync();
@@ -321,20 +306,15 @@ namespace MamaFood.Controllers
                 // To find the selected message - read and remove from the queue
                 if (message.SystemProperties.SequenceNumber == sequence)
                 {
-                    result = JsonConvert.DeserializeObject<string>(Encoding.UTF8.GetString(message.Body));
-                    Order confirmedOrder = new Order
-                    {
-                        PartitionKey = result,
-                        RowKey = User.Identity.Name
-                    };
-
+                    Order confirmedOrder = JsonConvert.DeserializeObject<Order>(Encoding.UTF8.GetString(message.Body));
+                    
                     // Complete the message
                     await messageReceiver.CompleteAsync(token);
 
                     // Update order status in Table Storage
                     CloudTable orderTable = GetTableStorageInformation("Order");
                     confirmedOrder.ETag = "*";
-                    confirmedOrder.OrderStatus = "Approved";
+                    confirmedOrder.OrderStatus = status;
                     TableOperation update = TableOperation.Replace(confirmedOrder);
                     await orderTable.ExecuteAsync(update);
                     break;
