@@ -19,9 +19,15 @@ namespace MamaFood.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult Index()
+        public IActionResult Index(string Search)
         {
-            return View(UserManager.Users.ToList());
+            var user = from u in UserManager.Users // Full list
+                       select u;
+            if (!String.IsNullOrEmpty(Search)) // If got any search keyword
+            {
+                user = user.Where(s => s.UserName.Contains(Search)); // Filter
+            }
+            return View(user.ToList());
         }
     }
 }

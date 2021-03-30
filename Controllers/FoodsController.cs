@@ -26,9 +26,15 @@ namespace MamaFood.Views.Foods
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string Search)
         {
-            return View(await _context.Food.ToListAsync());
+            var food = from f in _context.Food // Full list
+                       select f;
+            if(!String.IsNullOrEmpty(Search)) // If got any search keyword
+            {
+                food = food.Where(s => s.FoodName.Contains(Search)); // Filter
+            }
+            return View(await food.ToListAsync());
         }
 
         [Authorize(Roles = "Customer")]
